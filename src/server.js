@@ -8,6 +8,7 @@ import connectDb from './config/db.js';
 import rateLimit from 'express-rate-limit';
 import projectsRouter from './routes/projects.js';
 import contactRouter from './routes/contact.js';
+import experienceRouter from './routes/experience.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -33,6 +34,7 @@ const contactLimiter = rateLimit({
   legacyHeaders: false,
 });
 app.use('/api/contact', contactLimiter, contactRouter);
+app.use('/api/experience', experienceRouter);
 
 app.use(notFound);
 app.use(errorHandler);

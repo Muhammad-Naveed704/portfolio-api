@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { getProjectBySlug, listProjects } from '../controllers/projectsController.js';
+import { createProject, getProjectBySlug, listProjects } from '../controllers/projectsController.js';
+import requireApiKey from '../middleware/apiKey.js';
 
 const router = Router();
 
 router.get('/', listProjects);
 router.get('/:slug', getProjectBySlug);
+router.post('/', requireApiKey, createProject);
 
 export default router;
 

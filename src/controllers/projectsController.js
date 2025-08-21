@@ -24,4 +24,19 @@ export async function getProjectBySlug(req, res, next) {
   }
 }
 
+export async function createProject(req, res, next) {
+  try {
+    const payload = req.body || {};
+    if (!payload.title || !payload.slug || !payload.description) {
+      return res.status(400).json({ message: 'title, slug, description required' });
+    }
+    const exists = await Project.findOne({ slug: payload.slug });
+    if (exists) return res.status(409).json({ message: 'Slug already exists' });
+    const doc = await Project.create(payload);
+    res.status(201).json(doc);
+  } catch (err) {
+    next(err);
+  }
+}
+
 
