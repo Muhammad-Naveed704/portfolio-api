@@ -11,6 +11,7 @@ import projectsRouter from './routes/projects.js';
 import contactRouter from './routes/contact.js';
 import experienceRouter from './routes/experience.js';
 import authRouter from './routes/auth.js';
+import chatRouter from './routes/chat.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -30,6 +31,7 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use('/api/projects', projectsRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/chat', chatRouter);
 
 const contactLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -46,14 +48,13 @@ const io = new IOServer(server, {
   cors: { origin: corsOrigin, methods: ['GET', 'POST'] },
 });
 
+app.set('io', io);
+
 io.on('connection', (socket) => {
-  socket.on('chat:message', (payload) => {
-    const safe = {
-      name: String(payload?.name || 'Guest').slice(0, 60),
-      message: String(payload?.message || '').slice(0, 2000),
-      at: Date.now(),
-    };
-    io.emit('chat:message', safe);
+  // client should join a personal room after auth handshake (token sent in query or separate event)
+  socket.on('user:join', (userId) => {
+    if (!userId) return;
+    socket.join(`user:${userId}`);
   });
 });
 
