@@ -20,4 +20,27 @@ export async function createExperience(req, res, next) {
   }
 }
 
+export async function updateExperience(req, res, next) {
+  try {
+    const { id } = req.params;
+    const payload = req.body || {};
+    const updated = await Experience.findByIdAndUpdate(id, payload, { new: true });
+    if (!updated) return res.status(404).json({ message: 'Experience not found' });
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getExperienceById(req, res, next) {
+  try {
+    const { id } = req.params;
+    const doc = await Experience.findById(id);
+    if (!doc) return res.status(404).json({ message: 'Experience not found' });
+    res.json(doc);
+  } catch (err) {
+    next(err);
+  }
+}
+
 

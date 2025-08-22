@@ -9,6 +9,7 @@ import rateLimit from 'express-rate-limit';
 import projectsRouter from './routes/projects.js';
 import contactRouter from './routes/contact.js';
 import experienceRouter from './routes/experience.js';
+import authRouter from './routes/auth.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -26,10 +27,11 @@ app.use(morgan('tiny'));
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use('/api/projects', projectsRouter);
+app.use('/api/auth', authRouter);
 
 const contactLimiter = rateLimit({
   windowMs: 60 * 1000,
-  limit: 5,
+  limit: 20,
   standardHeaders: true,
   legacyHeaders: false,
 });
