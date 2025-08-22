@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/', listProjects);
 router.get('/:slug', getProjectBySlug);
-router.post('/', requireApiKey, createProject);
+router.post('/create', requireApiKey, createProject);
 
 export default router;
 

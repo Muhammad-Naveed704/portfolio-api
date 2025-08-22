@@ -4,8 +4,8 @@ import requireApiKey from '../middleware/apiKey.js';
 
 const router = Router();
 
-router.post('/', createMessage);
-router.get('/', requireApiKey, listMessages);
+router.post('/create', createMessage);
+router.get('/get', listMessages);
 
 export default router;
 

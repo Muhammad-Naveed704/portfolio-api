@@ -5,7 +5,7 @@ import requireApiKey from '../middleware/apiKey.js';
 const router = Router();
 
 router.get('/', listExperience);
-router.post('/', requireApiKey, createExperience);
+router.post('/create',  createExperience);
 
 export default router;
 

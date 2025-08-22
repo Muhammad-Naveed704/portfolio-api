@@ -39,4 +39,16 @@ export async function createProject(req, res, next) {
   }
 }
 
+export async function updateProject(req, res, next) {
+  try {
+    const { slug } = req.params;
+    const update = req.body || {};
+    const project = await Project.findOneAndUpdate({ slug }, update, { new: true });
+    if (!project) return res.status(404).json({ message: 'Project not found' });
+    res.json(project);
+  } catch (err) {
+    next(err);
+  }
+}
+
 
