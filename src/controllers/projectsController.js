@@ -30,8 +30,19 @@ export async function createProject(req, res, next) {
     if (!payload.title || !payload.slug || !payload.description) {
       return res.status(400).json({ message: 'title, slug, description required' });
     }
+    // Coerce fields coming from multipart/form-data
+    if (typeof payload.featured !== 'undefined') {
+      payload.featured = payload.featured === 'true' || payload.featured === 'on' || payload.featured === '1';
+    }
+    if (typeof payload.techStack === 'string') {
+      try { payload.techStack = JSON.parse(payload.techStack); } catch { payload.techStack = String(payload.techStack).split(',').map((s)=>s.trim()).filter(Boolean); }
+    }
+    if (typeof payload.tags === 'string') {
+      try { payload.tags = JSON.parse(payload.tags); } catch { payload.tags = String(payload.tags).split(',').map((s)=>s.trim()).filter(Boolean); }
+    }
     const exists = await Project.findOne({ slug: payload.slug });
     if (exists) return res.status(409).json({ message: 'Slug already exists' });
+    if (req.file) payload.image = `/uploads/${req.file.filename}`;
     const doc = await Project.create(payload);
     res.status(201).json(doc);
   } catch (err) {

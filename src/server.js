@@ -13,20 +13,31 @@ import experienceRouter from './routes/experience.js';
 import authRouter from './routes/auth.js';
 import chatRouter from './routes/chat.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 const port = process.env.PORT || 4000;
-const corsOrigin = process.env.CORS_ORIGIN || '*';
+const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
 
 app.use(helmet());
 app.use(compression());
-app.use(cors({ origin: corsOrigin }));
+app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('tiny'));
-
+// Serve uploaded files
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use(
+  "/uploads",
+  express.static(path.resolve(__dirname, "../uploads"), {
+    setHeaders: (res, path, stat) => {
+      res.set("Access-Control-Allow-Origin", corsOrigin);
+    },
+  })
+);
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use('/api/projects', projectsRouter);

@@ -5,6 +5,7 @@ const experienceSchema = new mongoose.Schema(
     company: { type: String, required: true },
     title: { type: String, required: true },
     period: { type: String, required: true },
+    logo: { type: String },
     bullets: { type: [String], default: [] },
     location: { type: String },
     website: { type: String },

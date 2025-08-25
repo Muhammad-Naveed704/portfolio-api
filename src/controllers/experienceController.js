@@ -13,7 +13,8 @@ export async function createExperience(req, res, next) {
   try {
     const { company, title, period, bullets = [], location, website, order = 0 } = req.body;
     if (!company || !title || !period) return res.status(400).json({ message: 'company, title, period required' });
-    const doc = await Experience.create({ company, title, period, bullets, location, website, order });
+    const logo = req.file ? `/uploads/${req.file.filename}` : undefined;
+    const doc = await Experience.create({ company, title, period, bullets, location, website, order, logo });
     res.status(201).json(doc);
   } catch (err) {
     next(err);
